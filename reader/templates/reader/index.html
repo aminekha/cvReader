@@ -1,0 +1,16 @@
+<!-- home.html -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="files" multiple required>
+    <button type="submit">Upload Files</button>
+  </form>
+  
+  {% if file_names %}
+    <h3>Uploaded Files:</h3>
+    <ol>
+      {% for file_name in file_names %}
+        <li>{{ file_name }}</li>
+      {% endfor %}
+    </ol>
+  {% endif %}
+  
