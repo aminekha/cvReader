@@ -10,8 +10,8 @@ Django==4.2.3
 django-appconf==1.0.5
 django-compressor==4.4
 docx2txt==0.8
-en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl#sha256=0964370218b7e1672a30ac50d72cdc6b16f7c867496f1d60925691188f4d2510
-fr-core-news-md @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_md-3.5.0/fr_core_news_md-3.5.0-py3-none-any.whl#sha256=bc4fe173a387407e6a830914e483d9de12938cc648befca35fa016903a5b2e3d
+# en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl#sha256=0964370218b7e1672a30ac50d72cdc6b16f7c867496f1d60925691188f4d2510
+# fr-core-news-md @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_md-3.5.0/fr_core_news_md-3.5.0-py3-none-any.whl#sha256=bc4fe173a387407e6a830914e483d9de12938cc648befca35fa016903a5b2e3d
 geonamescache==2.0.0
 idna==3.4
 Jinja2==3.1.2
