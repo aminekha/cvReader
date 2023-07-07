@@ -57,7 +57,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'cvReader.wsgi.application'
+WSGI_APPLICATION = 'cvReader.wsgi.app'
 
 
 # Database
