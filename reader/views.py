@@ -30,7 +30,7 @@ london_cities = [
 cities = france_cities + london_cities
 # Load spaCy's English model
 # nlp = spacy.load('en_core_web_sm')
-nlp = spacy.load('fr_core_news_md')
+nlp = spacy.load('fr_core_news_sm')
 
 def extract_data(file_path, file_name, keywords_list):
     if file_name.lower().endswith('.pdf'):
