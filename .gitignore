@@ -85,7 +85,7 @@ target/
 __pycache__/
 local_settings.py
 
-.venv
+.venv/
 db.sqlite3
 
 # Nodes modules
