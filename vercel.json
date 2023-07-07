@@ -10,10 +10,5 @@
         "src": "/(.*)",
         "dest": "cvReader/wsgi.py"
       }
-    ],
-    "functions": {
-      "cvReader/wsgi.py": {
-        "maxDuration": 30
-      }
-    }
+    ]
 }
