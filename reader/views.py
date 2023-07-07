@@ -2,13 +2,11 @@ import os
 import tempfile
 import spacy
 import PyPDF2
-import docx
 import docx2txt
-from geonamescache import GeonamesCache
 
 from django.shortcuts import render
 
-gc = GeonamesCache()
+
 countries = ["France", "Londres"]
 france_cities = [
     "Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Nantes", "Strasbourg", "Montpellier", "Bordeaux", "Lille",
