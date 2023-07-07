@@ -1,0 +1,14 @@
+{
+    "builds": [
+      {
+        "src": "cvReader/wsgi.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "cvReader/wsgi.py"
+      }
+    ]
+}
