@@ -32,7 +32,7 @@ cities = france_cities + london_cities
 # nlp = spacy.load('en_core_web_sm')
 nlp = spacy.load('fr_core_news_sm')
 
-def extract_data(file_path, file_name, keywords_list):
+def extract_data(file_path, file_name, keywords_list, coefficients):
     if file_name.lower().endswith('.pdf'):
         # Extract data from PDF
         with open(file_path, 'rb') as file:
@@ -53,23 +53,24 @@ def extract_data(file_path, file_name, keywords_list):
 
     # Extract relevant information (country, city, age)
     country = None
-    city = None
+    city = []
     age = None
 
     for ent in doc.ents:
         if ent.label_ == 'LOC' and len(ent.text) > 4:
             if not country and ent.text in countries:
                 country = ent.text
-            elif not city and ent.text in cities:
-                city = ent.text
+            elif ent.text not in city and ent.text in cities:
+                # city = ent.text
+                city.append(ent.text.lower())
         elif ent.label_ == 'CARDINAL' and not age:
             age = ent.text
     
     # Extract keywords
-    keyword_counts = {keyword: 0 for keyword in keywords_list}
+    keyword_counts = {keyword.lower(): 0 for keyword in keywords_list}
 
-    for keyword in keywords_list:
-        keyword_counts[keyword] = content.count(keyword)
+    for i, keyword in enumerate(keywords_list):
+        keyword_counts[keyword.lower()] = content.count(keyword.lower()) * int(coefficients[i])
 
 
     return country, city, age, keyword_counts
@@ -81,7 +82,9 @@ def index(request):
         country = request.POST.get('country', '')
         city = request.POST.get('city', '')
         age = request.POST.get('age', '')
-        keywords = [keyword.strip() for keyword in request.POST.get('keywords', '').split(',') if keyword.strip()]
+        # keywords = [keyword.strip() for keyword in request.POST.get('keywords', '').split(',') if keyword.strip()]
+        keywords = request.POST.getlist('keywords[]')
+        coefficients = request.POST.getlist('coefficients[]')
 
         filtered_files = []
 
@@ -93,7 +96,7 @@ def index(request):
                         temp_file.write(chunk)
                     temp_file_path = temp_file.name
 
-                file_country, file_city, file_age, file_keywords = extract_data(temp_file_path, file.name, keywords)
+                file_country, file_city, file_age, file_keywords = extract_data(temp_file_path, file.name, keywords, coefficients)
                 # print(file_country, file_city, file_age)
                 print(file_keywords)
 
@@ -110,8 +113,6 @@ def index(request):
 
                 total_count += bonus
 
-                print(total_count)
-
 
                 if(file_country):
                     if(file_country.lower() == country.lower()):
@@ -122,23 +123,21 @@ def index(request):
                     if country and country.lower() != file_country.lower():
                         os.remove(temp_file_path)
                         continue
-                else:
+                # else:
+                #         os.remove(temp_file_path)
+                #         continue
+                if(len(file_city) > 0):
+                    if city and city.lower() not in file_city:
                         os.remove(temp_file_path)
                         continue
-
-                # if city and city != file_city:
-                #     os.remove(temp_file_path)
-                #     continue
                 # if age and age != file_age:
-                #     os.remove(temp_file_path)
-                #     continue
-                # if keywords and not all(keyword.lower() in [kw.lower() for kw in file_keywords] for keyword in keywords):
                 #     os.remove(temp_file_path)
                 #     continue
 
                 filtered_files.append(
                     {
                         "file": file.name,
+                        "path": "",
                         "total": total_count
                     }
                 )
