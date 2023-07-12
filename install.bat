@@ -10,4 +10,4 @@ REM Step 3: Run Django local server
 start "" python manage.py runserver
 
 REM Step 4: Open Chrome with the local server URL
-start chrome http://localhost:8000
+start chrome http://127.0.0.1:8000

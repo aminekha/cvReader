@@ -37,21 +37,21 @@
         <label for="keyword1">Mot clé 1:</label>
         <input type="text" name="keywords[]" id="keyword1" required>
         <label for="coefficient1">Coefficient:</label>
-        <input type="number" name="coefficients[]" id="coefficient1" value="1" required>
+        <input type="number" name="coefficients[]" id="coefficient1" value="1" min="1" required>
       </div>
       <br>
       <div>
         <label for="keyword2">Mot clé 2:</label>
         <input type="text" name="keywords[]" id="keyword2" required>
         <label for="coefficient2">Coefficient:</label>
-        <input type="number" name="coefficients[]" id="coefficient2" value="1" required>
+        <input type="number" name="coefficients[]" id="coefficient2" value="1" min="1" required>
       </div>
       <br>
       <div>
         <label for="keyword3">Mot clé 3:</label>
         <input type="text" name="keywords[]" id="keyword3" required>
         <label for="coefficient3">Coefficient:</label>
-        <input type="number" name="coefficients[]" id="coefficient3" value="1" required>
+        <input type="number" name="coefficients[]" id="coefficient3" value="1" min="1" required>
       </div>
 </div>
 </div>
@@ -91,13 +91,23 @@
     <thead>
       <tr>
         <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Fichier</th>
-        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Note</th>
+
+        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Mot Clé 1</th>
+        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Mot Clé 2</th>
+        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Mot Clé 3</th>
+        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Bonus</th>
+        
+        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total</th>
       </tr>
     </thead>
     <tbody>
       {% for file_name in file_names %}
         <tr>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><a target="_blank" href={{file_name.path}}>{{ file_name.file }}</a></td>
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword1_total }}</td>
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword2_total }}</td>
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword3_total }}</td>
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.bonus }}</td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.total }}</td>
         </tr>
       {% endfor %}

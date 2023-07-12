@@ -1,7 +1,8 @@
 import os
 import tempfile
 import spacy
-import PyPDF2
+# import PyPDF2
+import fitz
 import docx2txt
 
 from django.shortcuts import render
@@ -32,15 +33,19 @@ cities = france_cities + london_cities
 # nlp = spacy.load('en_core_web_sm')
 nlp = spacy.load('fr_core_news_sm')
 
-def extract_data(file_path, file_name, keywords_list, coefficients):
+def extract_data(file_path, file_name, keywords_list, coefficients, is_country):
     if file_name.lower().endswith('.pdf'):
         # Extract data from PDF
-        with open(file_path, 'rb') as file:
-            pdf_reader = PyPDF2.PdfReader(file)
-            content = ""
-            for page_num in range(len(pdf_reader.pages)):
-                page = pdf_reader.pages[page_num]
-                content += page.extract_text()
+        doc = fitz.open(file_path)
+        content = ""
+        for page in doc:
+        # with open(file_path, 'rb') as file:
+            content += page.get_text()
+            # pdf_reader = PyPDF2.PdfReader(file)
+            # content = ""
+            # for page_num in range(len(pdf_reader.pages)):
+            #     page = pdf_reader.pages[page_num]
+            #     content += page.extract_text()
     elif file_name.lower().endswith('.docx'):
         # Extract data from DOCX
         content = docx2txt.process(file_path)
@@ -49,22 +54,23 @@ def extract_data(file_path, file_name, keywords_list, coefficients):
         return None
 
     # Process the content using spaCy
-    doc = nlp(content)
-
-    # Extract relevant information (country, city, age)
     country = None
     city = []
     age = None
 
-    for ent in doc.ents:
-        if ent.label_ == 'LOC' and len(ent.text) > 4:
-            if not country and ent.text in countries:
-                country = ent.text
-            elif ent.text not in city and ent.text in cities:
-                # city = ent.text
-                city.append(ent.text.lower())
-        elif ent.label_ == 'CARDINAL' and not age:
-            age = ent.text
+    # Extract relevant information (country, city, age)
+
+    if is_country:
+        doc = nlp(content)
+        for ent in doc.ents:
+            if ent.label_ == 'LOC' and len(ent.text) > 4:
+                if not country and ent.text in countries:
+                    country = ent.text
+                elif ent.text not in city and ent.text in cities:
+                    # city = ent.text
+                    city.append(ent.text.lower())
+            elif ent.label_ == 'CARDINAL' and not age:
+                age = ent.text
     
     # Extract keywords
     keyword_counts = {keyword.lower(): 0 for keyword in keywords_list}
@@ -95,10 +101,11 @@ def index(request):
                     for chunk in file.chunks():
                         temp_file.write(chunk)
                     temp_file_path = temp_file.name
+                    print(temp_file_path)
 
-                file_country, file_city, file_age, file_keywords = extract_data(temp_file_path, file.name, keywords, coefficients)
+                file_country, file_city, file_age, file_keywords = extract_data(temp_file_path, file.name, keywords, coefficients, country)
                 # print(file_country, file_city, file_age)
-                print(file_keywords)
+                # print(file_keywords)
 
                 # Rate the cv
                 total_count = sum(file_keywords.values())
@@ -137,7 +144,11 @@ def index(request):
                 filtered_files.append(
                     {
                         "file": file.name,
-                        "path": "",
+                        "keyword1_total": file_keywords[keywords[0]],
+                        "keyword2_total": file_keywords[keywords[1]],
+                        "keyword3_total": file_keywords[keywords[2]],
+                        "bonus": bonus,
+                        "path": temp_file_path,
                         "total": total_count
                     }
                 )
