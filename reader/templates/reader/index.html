@@ -94,7 +94,7 @@
     <tbody>
       {% for file_name in file_names %}
         <tr>
-          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><a target="_blank" href="file:///{{file_name.path}}">{{ file_name.file }}</a></td>
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><a target="_blank" href="{{file_name.path}}">{{ file_name.file }}</a></td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword1_total }}</td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword2_total }}</td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword3_total }}</td>

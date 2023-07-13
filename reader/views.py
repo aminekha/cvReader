@@ -4,7 +4,7 @@ import spacy
 # import PyPDF2
 import fitz
 import docx2txt
-
+import re
 from django.shortcuts import render
 
 
@@ -39,7 +39,9 @@ def extract_data(file_path, file_name, keywords_list, coefficients):
     keyword_counts = {keyword.lower(): 0 for keyword in keywords_list}
 
     for i, keyword in enumerate(keywords_list):
-        keyword_counts[keyword.lower()] = content.count(keyword.lower()) * int(coefficients[i])
+        pattern = r'\b{}\b'.format(re.escape(keyword.lower()))
+        matches = re.findall(pattern, content.lower())
+        keyword_counts[keyword.lower()] = len(matches) * int(coefficients[i])
 
 
     return keyword_counts
