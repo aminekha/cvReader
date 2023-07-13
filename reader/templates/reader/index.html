@@ -9,30 +9,12 @@
   <div class="space-y-12">
     <input type="file" name="files" multiple required>
     <br><br>
+    <div>
+      <label for="path">Dossier:</label>
+      <input style="width:500px;" type="text" name="path" id="path">
+    </div>
+    <br>
     <div class="border-b border-gray-900/10 pb-12">
-      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-        <div class="sm:col-span-3">
-          <label for="country" class="block text-sm font-medium leading-6 text-gray-900">Pays</label>
-          <div class="mt-2">
-            <input type="text" name="country" id="country" value="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-          </div>
-        </div>
-
-        <div class="sm:col-span-3">
-          <label for="city" class="block text-sm font-medium leading-6 text-gray-900">Ville</label>
-          <div class="mt-2">
-            <input type="text" name="city" id="city" value="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-          </div>
-        </div>
-
-        <div class="sm:col-span-4">
-          <label for="age" class="block text-sm font-medium leading-6 text-gray-900">Age</label>
-          <div class="mt-2">
-            <input type="number" name="age" id="age" value="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-          </div>
-        </div>
-      </div>
-      <br>
       <div>
         <label for="keyword1">Mot clé 1:</label>
         <input type="text" name="keywords[]" id="keyword1" required>
@@ -52,6 +34,15 @@
         <input type="text" name="keywords[]" id="keyword3" required>
         <label for="coefficient3">Coefficient:</label>
         <input type="number" name="coefficients[]" id="coefficient3" value="1" min="1" required>
+      </div>
+      <br>
+      <div>
+        <label for="keyword3">Bonus 1:</label>
+        <input type="number" name="bonus[]" id="bonus1" value="0" min="0"  required>
+        <label for="bonus2">Bonus 2:</label>
+        <input type="number" name="bonus[]" id="bonus2" value="5" min="0" required>
+        <label for="bonus2">Bonus 3:</label>
+        <input type="number" name="bonus[]" id="bonus3" value="10" min="0" required>
       </div>
 </div>
 </div>
@@ -103,7 +94,7 @@
     <tbody>
       {% for file_name in file_names %}
         <tr>
-          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><a target="_blank" href={{file_name.path}}>{{ file_name.file }}</a></td>
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm"><a target="_blank" href="file:///{{file_name.path}}">{{ file_name.file }}</a></td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword1_total }}</td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword2_total }}</td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword3_total }}</td>
