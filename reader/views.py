@@ -1,12 +1,14 @@
 import os
 import tempfile
+from django.http import HttpResponse
 import spacy
 # import PyPDF2
 import fitz
 import docx2txt
 import re
 from django.shortcuts import render
-
+import openpyxl
+from urllib.parse import quote
 
 # Load spaCy's English model
 # nlp = spacy.load('en_core_web_sm')
@@ -107,7 +109,36 @@ def index(request):
                     os.remove(temp_file_path)
 
         print("filtered data = ", filtered_files)
-
         return render(request, 'reader/index.html', {'file_names': sorted(filtered_files, key=lambda x: x['total'], reverse=True)})
 
     return render(request, 'reader/index.html')
+
+def export_data(request):
+    data = request.GET.getlist('data')
+    # Create an Excel workbook and worksheet
+    workbook = openpyxl.Workbook()
+    worksheet = workbook.active
+
+    # Write the header row
+    header = ['File', 'Keyword1 Total', 'Keyword2 Total', 'Keyword3 Total', 'Bonus', 'Path', 'Total']
+    for col_num, header_title in enumerate(header, 1):
+        col_letter = openpyxl.utils.get_column_letter(col_num)
+        cell = worksheet[f"{col_letter}1"]
+        cell.value = header_title
+
+    # Write the data rows
+    for row_num, row_data in enumerate(data, 2):
+        worksheet.cell(row=row_num, column=1, value=row_data['file'])
+        worksheet.cell(row=row_num, column=2, value=row_data['keyword1_total'])
+        worksheet.cell(row=row_num, column=3, value=row_data['keyword2_total'])
+        worksheet.cell(row=row_num, column=4, value=row_data['keyword3_total'])
+        worksheet.cell(row=row_num, column=5, value=row_data['bonus'])
+        worksheet.cell(row=row_num, column=6, value=row_data['path'])
+        worksheet.cell(row=row_num, column=7, value=row_data['total'])
+
+    # Create a response with the Excel file content
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    filename = 'export.xlsx'
+    response['Content-Disposition'] = 'attachment; filename="{}"; filename*=UTF-8\'\'{}'.format(quote(filename), quote(filename))
+    workbook.save(response)
+    return response

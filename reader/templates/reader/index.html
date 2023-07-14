@@ -9,11 +9,6 @@
   <div class="space-y-12">
     <input type="file" name="files" multiple required>
     <br><br>
-    <div>
-      <label for="path">Dossier:</label>
-      <input style="width:500px;" type="text" name="path" id="path">
-    </div>
-    <br>
     <div class="border-b border-gray-900/10 pb-12">
       <div>
         <label for="keyword1">Mot clé 1:</label>
@@ -78,6 +73,13 @@
 
 {% if file_names %}
   <h3>Résultat:</h3>
+  <form action="{% url 'export_data' %}" method="get">
+    {% for item in data %}
+      <input type="hidden" name="data" value="{{ item }}">
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Export</button>
+  </form>
+  
   <table id="customers">
     <thead>
       <tr>
