@@ -1,3 +1,4 @@
+import json
 import os
 import tempfile
 from django.http import HttpResponse
@@ -7,8 +8,7 @@ import fitz
 import docx2txt
 import re
 from django.shortcuts import render
-import openpyxl
-from urllib.parse import quote
+from openpyxl import Workbook
 
 # Load spaCy's English model
 # nlp = spacy.load('en_core_web_sm')
@@ -113,32 +113,44 @@ def index(request):
 
     return render(request, 'reader/index.html')
 
-def export_data(request):
-    data = request.GET.getlist('data')
-    # Create an Excel workbook and worksheet
-    workbook = openpyxl.Workbook()
-    worksheet = workbook.active
+def export_table_as_excel(request):
+    file_names_json = request.GET.get('file_names')
+    
+    file_names = json.loads(file_names_json.replace("\'", "\""))
+    # Create a new workbook
+    workbook = Workbook()
 
-    # Write the header row
-    header = ['File', 'Keyword1 Total', 'Keyword2 Total', 'Keyword3 Total', 'Bonus', 'Path', 'Total']
-    for col_num, header_title in enumerate(header, 1):
-        col_letter = openpyxl.utils.get_column_letter(col_num)
-        cell = worksheet[f"{col_letter}1"]
-        cell.value = header_title
+    # Get the active sheet
+    sheet = workbook.active
 
-    # Write the data rows
-    for row_num, row_data in enumerate(data, 2):
-        worksheet.cell(row=row_num, column=1, value=row_data['file'])
-        worksheet.cell(row=row_num, column=2, value=row_data['keyword1_total'])
-        worksheet.cell(row=row_num, column=3, value=row_data['keyword2_total'])
-        worksheet.cell(row=row_num, column=4, value=row_data['keyword3_total'])
-        worksheet.cell(row=row_num, column=5, value=row_data['bonus'])
-        worksheet.cell(row=row_num, column=6, value=row_data['path'])
-        worksheet.cell(row=row_num, column=7, value=row_data['total'])
+    # Add table headers
+    headers = [
+        'Fichier',
+        'Mot Clé 1',
+        'Mot Clé 2',
+        'Mot Clé 3',
+        'Bonus',
+        'Total'
+    ]
+    sheet.append(headers)
 
-    # Create a response with the Excel file content
+    # Add table data
+    for file_name in file_names:
+        row = [
+            file_name["file"],
+            file_name["keyword1_total"],
+            file_name["keyword2_total"],
+            file_name["keyword3_total"],
+            file_name["bonus"],
+            file_name["total"]
+        ]
+        sheet.append(row)
+
+    # Set the response headers for file download
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    filename = 'export.xlsx'
-    response['Content-Disposition'] = 'attachment; filename="{}"; filename*=UTF-8\'\'{}'.format(quote(filename), quote(filename))
+    response['Content-Disposition'] = 'attachment; filename=mytable.xlsx'
+
+    # Save the workbook to the response
     workbook.save(response)
+
     return response

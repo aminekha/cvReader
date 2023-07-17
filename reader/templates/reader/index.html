@@ -73,13 +73,8 @@
 
 {% if file_names %}
   <h3>Résultat:</h3>
-  <form action="{% url 'export_data' %}" method="get">
-    {% for item in data %}
-      <input type="hidden" name="data" value="{{ item }}">
-    {% endfor %}
-    <button type="submit" class="btn btn-primary">Export</button>
-  </form>
-  
+  <a href="{% url 'export_excel' %}?file_names={{ file_names }}" class="btn btn-primary">Export</a>
+    
   <table id="customers">
     <thead>
       <tr>
