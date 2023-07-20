@@ -1,3 +1,4 @@
+anyio==3.7.1
 asgiref==3.7.2
 blis==0.7.9
 catalogue==2.0.8
@@ -9,10 +10,17 @@ cymem==2.0.7
 Django==4.2.3
 django-appconf==1.0.5
 django-compressor==4.4
+dnspython==2.4.0
 docx2txt==0.8
 # en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl#sha256=0964370218b7e1672a30ac50d72cdc6b16f7c867496f1d60925691188f4d2510
+et-xmlfile==1.1.0
+exceptiongroup==1.1.2
+filelock==3.12.2
 # fr-core-news-md @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_md-3.5.0/fr_core_news_md-3.5.0-py3-none-any.whl#sha256=bc4fe173a387407e6a830914e483d9de12938cc648befca35fa016903a5b2e3d
-# fr-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.5.0/fr_core_news_sm-3.5.0-py3-none-any.whl
+# fr-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.5.0/fr_core_news_sm-3.5.0-py3-none-any.whl#sha256=632607dab3a5253e5079e1b1a094cedc87185c2930e4405080d2e1810fbf9800
+geonamescache==2.0.0
+h11==0.14.0
+httpcore==0.17.3
 idna==3.4
 Jinja2==3.1.2
 langcodes==3.3.0
@@ -20,17 +28,21 @@ lxml==4.9.3
 MarkupSafe==2.1.3
 murmurhash==1.0.9
 numpy==1.25.0
+openpyxl==3.1.2
 packaging==23.1
 pathy==0.10.2
 Pillow==10.0.0
 preshed==3.0.8
+py3-validate-email @ git+https://gitea.ksol.io/karolyi/py3-validate-email@32c8f4cdfaba4c7e7fc81405a023c849a9268859
 pydantic==1.10.11
+PyMuPDF==1.22.5
 PyPDF2==3.0.1
 python-docx==0.8.11
 rcssmin==1.1.1
 requests==2.31.0
 rjsmin==1.2.1
 smart-open==6.3.0
+sniffio==1.3.0
 spacy==3.5.4
 spacy-legacy==3.0.12
 spacy-loggers==1.0.4
@@ -40,7 +52,5 @@ thinc==8.1.10
 tqdm==4.65.0
 typer==0.9.0
 typing_extensions==4.7.1
-urllib3==2.0.3
+urllib3==1.26.6
 wasabi==1.1.2
-PyMuPDF
-openpyxl

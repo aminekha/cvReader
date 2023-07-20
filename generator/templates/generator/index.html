@@ -51,7 +51,11 @@
 {% if emails %}
   <h3>Résultat:</h3>
   {% for email in emails%}
-  <p>{{email}}</p>
+    {% if email == valid %}
+      <p style="color:green;">{{email}}</p>
+    {% else %}
+      <p style="color:red;">{{email}}</p>
+    {% endif %}
   {% endfor %} 
 
 {% endif %}

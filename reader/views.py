@@ -65,48 +65,52 @@ def index(request):
 
         for file in files:
             if file.name.lower().endswith(('.pdf', '.docx')):
-                # Save the file to a temporary location
-                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                    for chunk in file.chunks():
-                        temp_file.write(chunk)
-                    temp_file_path = temp_file.name
-                    print(temp_file_path)
+                try:
+                    # Save the file to a temporary location
+                    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                        for chunk in file.chunks():
+                            temp_file.write(chunk)
+                        temp_file_path = temp_file.name
+                        print(temp_file_path)
 
-                file_keywords = extract_data(temp_file_path, file.name, keywords, coefficients)
-                if(file_keywords is not None):
-                    # print(file_country, file_city, file_age)
-                    # print(file_keywords)
+                    file_keywords = extract_data(temp_file_path, file.name, keywords, coefficients)
+                    if(file_keywords is not None):
+                        # print(file_country, file_city, file_age)
+                        # print(file_keywords)
 
-                    # Rate the cv
-                    total_count = sum(file_keywords.values())
+                        # Rate the cv
+                        total_count = sum(file_keywords.values())
 
-                    # Give bonus if it has more than one keyword
-                    num_keywords_with_counts = sum(1 for count in file_keywords.values() if count > 0)  # Count the number of keywords with counts greater than 0
-                    b = 0
-                    if num_keywords_with_counts == 1:
+                        # Give bonus if it has more than one keyword
+                        num_keywords_with_counts = sum(1 for count in file_keywords.values() if count > 0)  # Count the number of keywords with counts greater than 0
                         b = 0
-                    elif num_keywords_with_counts == 2:
-                        b = 1
-                    elif num_keywords_with_counts == len(keywords):
-                        b = 2
+                        if num_keywords_with_counts == 1:
+                            b = 0
+                        elif num_keywords_with_counts == 2:
+                            b = 1
+                        elif num_keywords_with_counts == len(keywords):
+                            b = 2
 
-                    total_count += int(bonus[b])
+                        total_count += int(bonus[b])
 
-                    path = path + "/" + file.name
+                        path = path + "/" + file.name
 
-                    if(total_count > 1):
-                        filtered_files.append(
-                            {
-                                "file": file.name,
-                                "keyword1_total": file_keywords[keywords[0]],
-                                "keyword2_total": file_keywords[keywords[1]],
-                                "keyword3_total": file_keywords[keywords[2]],
-                                "bonus": bonus[b],
-                                "path": path,
-                                "total": total_count
-                            }
-                        )
-                    os.remove(temp_file_path)
+                        if(total_count > 1):
+                            filtered_files.append(
+                                {
+                                    "file": file.name,
+                                    "keyword1_total": file_keywords[keywords[0]],
+                                    "keyword2_total": file_keywords[keywords[1]],
+                                    "keyword3_total": file_keywords[keywords[2]],
+                                    "bonus": bonus[b],
+                                    "path": path,
+                                    "total": total_count
+                                }
+                            )
+                        os.remove(temp_file_path)
+                except Exception as e:
+                    print(e)
+                    pass
 
         print("filtered data = ", filtered_files)
         return render(request, 'reader/index.html', {'file_names': sorted(filtered_files, key=lambda x: x['total'], reverse=True)})
