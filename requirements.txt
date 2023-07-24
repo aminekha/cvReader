@@ -18,7 +18,6 @@ exceptiongroup==1.1.2
 filelock==3.12.2
 # fr-core-news-md @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_md-3.5.0/fr_core_news_md-3.5.0-py3-none-any.whl#sha256=bc4fe173a387407e6a830914e483d9de12938cc648befca35fa016903a5b2e3d
 # fr-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.5.0/fr_core_news_sm-3.5.0-py3-none-any.whl#sha256=632607dab3a5253e5079e1b1a094cedc87185c2930e4405080d2e1810fbf9800
-geonamescache==2.0.0
 h11==0.14.0
 httpcore==0.17.3
 idna==3.4
@@ -33,7 +32,7 @@ packaging==23.1
 pathy==0.10.2
 Pillow==10.0.0
 preshed==3.0.8
-py3-validate-email
+py3-validate-email @ git+https://gitea.ksol.io/karolyi/py3-validate-email@32c8f4cdfaba4c7e7fc81405a023c849a9268859
 pydantic==1.10.11
 PyMuPDF==1.22.5
 PyPDF2==3.0.1
