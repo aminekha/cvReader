@@ -73,7 +73,9 @@
 
 {% if file_names %}
   <h3>Résultat:</h3>
-  <a href="{% url 'export_excel' %}?file_names={{ file_names }}" class="btn btn-primary">Export</a>
+  <button id="export-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    Export
+  </button>
     
   <table id="customers">
     <thead>
@@ -101,6 +103,40 @@
       {% endfor %}
     </tbody>
   </table>
-{% endif %}
+  <script>
+    document.getElementById('export-btn').addEventListener('click', function () {
+      // Loop over the table rows and extract data to create a JSON array
+      var customersData = [];
+      var tableRows = document.querySelectorAll('#customers tbody tr');
+      tableRows.forEach(function (row) {
+        var data = {
+          file: row.cells[0].textContent.trim(),
+          keyword1_total: parseInt(row.cells[1].textContent.trim()),
+          keyword2_total: parseInt(row.cells[2].textContent.trim()),
+          keyword3_total: parseInt(row.cells[3].textContent.trim()),
+          bonus: row.cells[4].textContent.trim(),
+          total: parseInt(row.cells[5].textContent.trim())
+        };
+        customersData.push(data);
+      });
 
+      // Create a new hidden form element to send the data to the view
+      var form = document.createElement('form');
+      form.method = 'POST';  // Use POST method for large data
+      form.action = "{% url 'export_excel' %}";
+      form.style.display = 'none';
+
+      // Add the customersData to the form as a hidden input field
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'customers_data';
+      input.value = JSON.stringify(customersData);
+      form.appendChild(input);
+
+      // Append the form to the document and submit it
+      document.body.appendChild(form);
+      form.submit();
+    });
+  </script>
+{% endif %}
 {% endblock content %}

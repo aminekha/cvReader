@@ -9,6 +9,7 @@ import docx2txt
 import re
 from django.shortcuts import render
 from openpyxl import Workbook
+from django.views.decorators.csrf import csrf_exempt
 
 # Load spaCy's English model
 # nlp = spacy.load('en_core_web_sm')
@@ -58,6 +59,7 @@ def index(request):
         # keywords = [keyword.strip() for keyword in request.POST.get('keywords', '').split(',') if keyword.strip()]
         path = request.POST.get('path', '')
         keywords = request.POST.getlist('keywords[]')
+        keywords = [keyword.lower() for keyword in keywords]
         coefficients = request.POST.getlist('coefficients[]')
         bonus = request.POST.getlist('bonus[]')
 
@@ -109,7 +111,7 @@ def index(request):
                             )
                         os.remove(temp_file_path)
                 except Exception as e:
-                    print(e)
+                    print("error = ", e)
                     pass
 
         print("filtered data = ", filtered_files)
@@ -117,8 +119,9 @@ def index(request):
 
     return render(request, 'reader/index.html')
 
+@csrf_exempt
 def export_table_as_excel(request):
-    file_names_json = request.GET.get('file_names')
+    file_names_json = request.POST.get('customers_data')
     
     file_names = json.loads(file_names_json.replace("\'", "\""))
     # Create a new workbook
