@@ -33,7 +33,7 @@ packaging==23.1
 pathy==0.10.2
 Pillow==10.0.0
 preshed==3.0.8
-py3-validate-email @ git+https://gitea.ksol.io/karolyi/py3-validate-email@32c8f4cdfaba4c7e7fc81405a023c849a9268859
+py3-validate-email
 pydantic==1.10.11
 PyMuPDF==1.22.5
 PyPDF2==3.0.1
