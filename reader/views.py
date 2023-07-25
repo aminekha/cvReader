@@ -123,7 +123,7 @@ def index(request):
 def export_table_as_excel(request):
     file_names_json = request.POST.get('customers_data')
     
-    file_names = json.loads(file_names_json.replace("\'", "\""))
+    file_names = json.loads(file_names_json)
     # Create a new workbook
     workbook = Workbook()
 
