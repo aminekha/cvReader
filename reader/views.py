@@ -62,6 +62,7 @@ def index(request):
         keywords = [keyword.lower() for keyword in keywords]
         coefficients = request.POST.getlist('coefficients[]')
         bonus = request.POST.getlist('bonus[]')
+        limit = int(request.POST.get('limit', 500))
 
         filtered_files = []
 
@@ -113,10 +114,9 @@ def index(request):
                 except Exception as e:
                     print("error = ", e)
                     pass
-
+        filtered_files = sorted(filtered_files, key=lambda x: x['total'], reverse=True)[:limit]
         print("filtered data = ", filtered_files)
-        return render(request, 'reader/index.html', {'file_names': sorted(filtered_files, key=lambda x: x['total'], reverse=True)})
-
+        return render(request, 'reader/index.html', {'file_names': filtered_files, "keywords": keywords})
     return render(request, 'reader/index.html')
 
 @csrf_exempt
@@ -125,6 +125,7 @@ def export_table_as_excel(request):
     
     file_names = json.loads(file_names_json)
     # Create a new workbook
+    keywords = file_names.pop()
     workbook = Workbook()
 
     # Get the active sheet
@@ -133,9 +134,9 @@ def export_table_as_excel(request):
     # Add table headers
     headers = [
         'Fichier',
-        'Mot Clé 1',
-        'Mot Clé 2',
-        'Mot Clé 3',
+        keywords["keyword1"],
+        keywords["keyword2"],
+        keywords["keyword3"],
         'Bonus',
         'Total'
     ]

@@ -39,6 +39,12 @@
         <label for="bonus2">Bonus 3:</label>
         <input type="number" name="bonus[]" id="bonus3" value="10" min="0" required>
       </div>
+
+      <br>
+      <div>
+        <label for="limit">Limite:</label>
+        <input type="number" name="limit" id="limit" value="500" min="1"  required>
+      </div>
 </div>
 </div>
 <div class="mt-6 flex items-center justify-end gap-x-6">
@@ -82,9 +88,9 @@
       <tr>
         <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Fichier</th>
 
-        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Mot Clé 1</th>
-        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Mot Clé 2</th>
-        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Mot Clé 3</th>
+        {% for keyword in keywords %}
+          <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">{{keyword}}</th>
+        {% endfor %}
         <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Bonus</th>
         
         <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total</th>
@@ -107,6 +113,7 @@
     document.getElementById('export-btn').addEventListener('click', function () {
       // Loop over the table rows and extract data to create a JSON array
       var customersData = [];
+      var tableHead = document.querySelectorAll('#customers thead tr');
       var tableRows = document.querySelectorAll('#customers tbody tr');
       tableRows.forEach(function (row) {
         var data = {
@@ -119,6 +126,15 @@
         };
         customersData.push(data);
       });
+
+      tableHead.forEach(function (row) {
+        var data = {
+          keyword1: row.cells[1].textContent.trim(),
+          keyword2: row.cells[2].textContent.trim(),
+          keyword3: row.cells[3].textContent.trim(),
+        };
+        customersData.push(data);
+      })
 
       // Create a new hidden form element to send the data to the view
       var form = document.createElement('form');
