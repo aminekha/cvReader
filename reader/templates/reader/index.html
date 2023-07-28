@@ -11,6 +11,11 @@
     <br><br>
     <div class="border-b border-gray-900/10 pb-12">
       <div>
+        <label for="path">Destination:</label>
+        <input type="text" name="path" id="path" required>
+      </div>
+      <br>
+      <div>
         <label for="keyword1">Mot clé 1:</label>
         <input type="text" name="keywords[]" id="keyword1" required>
         <label for="coefficient1">Coefficient:</label>
@@ -115,14 +120,19 @@
       var customersData = [];
       var tableHead = document.querySelectorAll('#customers thead tr');
       var tableRows = document.querySelectorAll('#customers tbody tr');
+
       tableRows.forEach(function (row) {
+        var linkElement = row.cells[0].querySelector('a');
+        var link = linkElement.href;
+        console.log("link = ", link);
         var data = {
           file: row.cells[0].textContent.trim(),
           keyword1_total: parseInt(row.cells[1].textContent.trim()),
           keyword2_total: parseInt(row.cells[2].textContent.trim()),
           keyword3_total: parseInt(row.cells[3].textContent.trim()),
           bonus: row.cells[4].textContent.trim(),
-          total: parseInt(row.cells[5].textContent.trim())
+          total: parseInt(row.cells[5].textContent.trim()),
+          path: link,
         };
         customersData.push(data);
       });

@@ -7,9 +7,13 @@ import spacy
 import fitz
 import docx2txt
 import re
+import shutil
+
 from django.shortcuts import render
 from openpyxl import Workbook
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+import urllib.parse
 
 # Load spaCy's English model
 # nlp = spacy.load('en_core_web_sm')
@@ -96,7 +100,7 @@ def index(request):
 
                         total_count += int(bonus[b])
 
-                        path = path + "/" + file.name
+                        file_path = path + "/" + file.name
 
                         if(total_count > 1):
                             filtered_files.append(
@@ -106,7 +110,7 @@ def index(request):
                                     "keyword2_total": file_keywords[keywords[1]],
                                     "keyword3_total": file_keywords[keywords[2]],
                                     "bonus": bonus[b],
-                                    "path": path,
+                                    "path": file_path,
                                     "total": total_count
                                 }
                             )
@@ -153,6 +157,8 @@ def export_table_as_excel(request):
             file_name["total"]
         ]
         sheet.append(row)
+    
+    copy_files_to_new_folder(file_names)
 
     # Set the response headers for file download
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
@@ -162,3 +168,22 @@ def export_table_as_excel(request):
     workbook.save(response)
 
     return response
+
+def copy_files_to_new_folder(files):
+    try:
+        destination_folder = os.path.join(settings.BASE_DIR, 'export')
+
+        if not os.path.exists(destination_folder):
+            os.makedirs(destination_folder)
+
+        for file_record in files:
+            path = file_record["path"].replace("http://127.0.0.1:8000", "")
+            decoded_file_path = urllib.parse.unquote(path)
+            destination_file = os.path.join(destination_folder, file_record["file"])
+
+            if os.path.exists(decoded_file_path):
+                shutil.copy(decoded_file_path, destination_file)
+
+        print("Files copied successfully.") 
+    except Exception as e:
+        print("Error copying files = ", e)

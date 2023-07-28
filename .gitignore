@@ -91,3 +91,6 @@ db.sqlite3
 # Nodes modules
 /node_modules
 node_modules/
+
+#
+export/
