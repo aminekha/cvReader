@@ -138,6 +138,7 @@ def export_table_as_excel(request):
     # Add table headers
     headers = [
         'Fichier',
+        'LinkedIn',
         keywords["keyword1"],
         keywords["keyword2"],
         keywords["keyword3"],
@@ -148,8 +149,10 @@ def export_table_as_excel(request):
 
     # Add table data
     for file_name in file_names:
+        name = file_name["file"].split(", ")[:-1]
         row = [
             file_name["file"],
+            f"https://linkedin.com/in/{name}",
             file_name["keyword1_total"],
             file_name["keyword2_total"],
             file_name["keyword3_total"],
