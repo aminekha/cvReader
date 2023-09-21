@@ -2,7 +2,7 @@ import json
 import os
 import tempfile
 from django.http import HttpResponse
-import spacy
+# import spacy
 # import PyPDF2
 import fitz
 import docx2txt
@@ -17,7 +17,7 @@ import urllib.parse
 
 # Load spaCy's English model
 # nlp = spacy.load('en_core_web_sm')
-nlp = spacy.load('fr_core_news_sm')
+# nlp = spacy.load('fr_core_news_sm')
 
 def extract_data(file_path, file_name, keywords_list, coefficients):
     if file_name.lower().endswith('.pdf'):
@@ -181,10 +181,10 @@ def copy_files_to_new_folder(files):
 
         for file_record in files:
             path = file_record["path"].replace("http://127.0.0.1:8000", "")
-            decoded_file_path = urllib.parse.unquote(path)
+            decoded_file_path = urllib.parse.unquote(path).replace("file:///", "")
             destination_file = os.path.join(destination_folder, file_record["file"])
 
-            if os.path.exists(decoded_file_path):
+            if os.path.exists(rf"{decoded_file_path}"):
                 shutil.copy(decoded_file_path, destination_file)
 
         print("Files copied successfully.") 
