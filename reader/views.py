@@ -50,8 +50,14 @@ def extract_data(file_path, file_name, keywords_list, coefficients):
         matches = re.findall(pattern, content.lower())
         keyword_counts[keyword.lower()] = len(matches) * int(coefficients[i])
 
-
-    return keyword_counts
+    # Extract groups
+    groups_index = content.find("groups")
+    if groups_index != -1:
+        groups = content[groups_index:]
+    else:
+        groups = ""
+    
+    return keyword_counts, groups
 
 
 def index(request):
@@ -69,9 +75,11 @@ def index(request):
         limit = int(request.POST.get('limit', 500))
 
         filtered_files = []
+        sales_reps = ["rym", "faten", "nahla", "sandrine", "joel"]
 
         for file in files:
             if file.name.lower().endswith(('.pdf', '.docx')):
+                person = file.name.split(", ")[0]
                 try:
                     # Save the file to a temporary location
                     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
@@ -80,7 +88,7 @@ def index(request):
                         temp_file_path = temp_file.name
                         print(temp_file_path)
 
-                    file_keywords = extract_data(temp_file_path, file.name, keywords, coefficients)
+                    file_keywords, groups = extract_data(temp_file_path, file.name, keywords, coefficients)
                     if(file_keywords is not None):
                         # print(file_country, file_city, file_age)
                         # print(file_keywords)
@@ -111,7 +119,9 @@ def index(request):
                                     "keyword3_total": file_keywords[keywords[2]],
                                     "bonus": bonus[b],
                                     "path": file_path,
-                                    "total": total_count
+                                    "total": total_count,
+                                    "person": person,
+                                    "groups": groups,
                                 }
                             )
                         os.remove(temp_file_path)
@@ -137,27 +147,37 @@ def export_table_as_excel(request):
 
     # Add table headers
     headers = [
-        'Fichier',
+        'Salarié',
+        'Pays',
+        'Ville',
         'LinkedIn',
         keywords["keyword1"],
         keywords["keyword2"],
         keywords["keyword3"],
         'Bonus',
         'Total'
+        'Groupes',
     ]
     sheet.append(headers)
+    
+    # // salarié, pays, ville, linkedin, total, groupes
 
     # Add table data
     for file_name in file_names:
-        name = file_name["file"].split(", ")[-1].replace(".pdf", "").replace(".docx", "")
+        file_split = file_name["file"].split(", ")
+        name = file_split[-1].replace(".pdf", "").replace(".docx", "")
         row = [
-            file_name["file"],
+            file_split[0],
+            file_split[1],
+            file_split[2],
+            # file_name["file"],
             f"https://linkedin.com/in/{name}",
             file_name["keyword1_total"],
             file_name["keyword2_total"],
             file_name["keyword3_total"],
             file_name["bonus"],
-            file_name["total"]
+            file_name["total"],
+            file_name["groups"],
         ]
         sheet.append(row)
     

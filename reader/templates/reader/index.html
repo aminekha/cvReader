@@ -99,6 +99,8 @@
         <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Bonus</th>
         
         <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total</th>
+        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Salarié</th>
+        <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Groupes</th>
       </tr>
     </thead>
     <tbody>
@@ -110,6 +112,8 @@
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword3_total }}</td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.bonus }}</td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.total }}</td>
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.person }}</td>
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.groups }}</td>
         </tr>
       {% endfor %}
     </tbody>
@@ -124,7 +128,7 @@
       tableRows.forEach(function (row) {
         var linkElement = row.cells[0].querySelector('a');
         var link = linkElement.href;
-        console.log("link = ", link);
+        console.log("link = ", row.cells);
         var data = {
           file: row.cells[0].textContent.trim(),
           keyword1_total: parseInt(row.cells[1].textContent.trim()),
@@ -133,6 +137,7 @@
           bonus: row.cells[4].textContent.trim(),
           total: parseInt(row.cells[5].textContent.trim()),
           path: link,
+          groups: row.cells[7].textContent.trim(),
         };
         customersData.push(data);
       });
