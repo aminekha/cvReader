@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+class Resume(models.Model):
+    title = models.CharField(max_length=255, default="")
+    content = models.TextField(default="")
+    category = models.CharField(max_length=255, default="")

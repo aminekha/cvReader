@@ -7,14 +7,14 @@
 <form method="post" enctype="multipart/form-data">
   {% csrf_token %}
   <div class="space-y-12">
-    <input type="file" name="files" multiple required>
-    <br><br>
+    <!-- <input type="file" name="files" multiple required> -->
+    <!-- <br><br> -->
     <div class="border-b border-gray-900/10 pb-12">
-      <div>
+      <!-- <div>
         <label for="path">Destination:</label>
         <input type="text" name="path" id="path" required>
       </div>
-      <br>
+      <br> -->
       <div>
         <label for="keyword1">Mot clé 1:</label>
         <input type="text" name="keywords[]" id="keyword1" required>
