@@ -192,7 +192,7 @@ def index(request):
         #             print("error = ", e)
         #             pass
         filtered_files = sorted(filtered_files, key=lambda x: x['total'], reverse=True)[:limit]
-        print("filtered data = ", filtered_files)
+        # print("filtered data = ", filtered_files)
         return render(request, 'reader/index.html', {'file_names': filtered_files, "keywords": keywords})
     return render(request, 'reader/index.html')
 
