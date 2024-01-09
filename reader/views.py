@@ -73,7 +73,7 @@ def index(request):
         # city = request.POST.get('city', '')
         # age = request.POST.get('age', '')
         # keywords = [keyword.strip() for keyword in request.POST.get('keywords', '').split(',') if keyword.strip()]
-        # path = request.POST.get('path', '')
+        path = request.POST.get('path', '')
         keywords = request.POST.getlist('keywords[]')
         keywords = [keyword.lower() for keyword in keywords]
         coefficients = request.POST.getlist('coefficients[]')
@@ -81,14 +81,8 @@ def index(request):
         limit = int(request.POST.get('limit', 500))
 
         filtered_files = []
-        sales_reps = ["rym", "faten", "nahla", "sandrine", "joel"]
-        
-        limit = 10000
-        
-        db_folder_path = os.path.join(os.getcwd(), "db")
-        docx_files = [f for f in os.listdir(db_folder_path) if f.endswith(".docx")]
+                
         start_time = time.time()
-        query = f"SELECT * FROM resumes WHERE LOWER(content) LIKE ANY(ARRAY[{', '.join(['%'+kw.lower()+'%' for kw in keywords])}])"
         
         resumes = Resume.objects.filter(content__contains=keywords[0])
         for value in keywords[1:]:
@@ -98,9 +92,6 @@ def index(request):
             # file_path = os.path.join(db_folder_path, file4)
             file_keywords, groups = extract_data(resume.content, resume.title, keywords, coefficients)
             if(file_keywords is not None):
-                # print(file_country, file_city, file_age)
-                # print(file_keywords)
-
                 # Rate the cv
                 total_count = sum(file_keywords.values())
 
@@ -116,8 +107,6 @@ def index(request):
 
                 total_count += int(bonus[b])
 
-                # file_path = path + "/" + resume.title
-
                 if(total_count > 1):
                     filtered_files.append(
                         {
@@ -126,7 +115,7 @@ def index(request):
                             "keyword2_total": file_keywords[keywords[1]],
                             "keyword3_total": file_keywords[keywords[2]],
                             "bonus": bonus[b],
-                            "path": "",
+                            "path": f"{path}/{resume.title}",
                             "total": total_count,
                             "person": resume.category,
                             "groups": groups,
@@ -138,71 +127,20 @@ def index(request):
         elapsed_time = end_time - start_time
         print(f'The operation took {elapsed_time} seconds to execute.')
             
-
-        # for file in files:
-        #     if file.name.lower().endswith(('.pdf', '.docx')):
-        #         person = file.name.split(", ")[0]
-        #         try:
-        #             # Save the file to a temporary location
-        #             with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-        #                 for chunk in file.chunks():
-        #                     temp_file.write(chunk)
-        #                 temp_file_path = temp_file.name
-        #                 print(temp_file_path)
-
-        #             file_keywords, groups = extract_data(temp_file_path, file.name, keywords, coefficients)
-        #             if(file_keywords is not None):
-        #                 # print(file_country, file_city, file_age)
-        #                 # print(file_keywords)
-
-        #                 # Rate the cv
-        #                 total_count = sum(file_keywords.values())
-
-        #                 # Give bonus if it has more than one keyword
-        #                 num_keywords_with_counts = sum(1 for count in file_keywords.values() if count > 0)  # Count the number of keywords with counts greater than 0
-        #                 b = 0
-        #                 if num_keywords_with_counts == 1:
-        #                     b = 0
-        #                 elif num_keywords_with_counts == 2:
-        #                     b = 1
-        #                 elif num_keywords_with_counts == len(keywords):
-        #                     b = 2
-
-        #                 total_count += int(bonus[b])
-
-        #                 file_path = path + "/" + file.name
-
-        #                 if(total_count > 1):
-        #                     filtered_files.append(
-        #                         {
-        #                             "file": file.name,
-        #                             "keyword1_total": file_keywords[keywords[0]],
-        #                             "keyword2_total": file_keywords[keywords[1]],
-        #                             "keyword3_total": file_keywords[keywords[2]],
-        #                             "bonus": bonus[b],
-        #                             "path": file_path,
-        #                             "total": total_count,
-        #                             "person": person,
-        #                             "groups": groups,
-        #                         }
-        #                     )
-        #                 temp_file.close()
-        #                 os.remove(temp_file_path)
-        #         except Exception as e:
-        #             print("error = ", e)
-        #             pass
         filtered_files = sorted(filtered_files, key=lambda x: x['total'], reverse=True)[:limit]
-        # print("filtered data = ", filtered_files)
         return render(request, 'reader/index.html', {'file_names': filtered_files, "keywords": keywords})
     return render(request, 'reader/index.html')
+
+from io import BytesIO
 
 @csrf_exempt
 def export_table_as_excel(request):
     file_names_json = request.POST.get('customers_data')
     
     file_names = json.loads(file_names_json)
-    # Create a new workbook
     keywords = file_names.pop()
+
+    # Create a new workbook
     workbook = Workbook()
 
     # Get the active sheet
@@ -214,6 +152,7 @@ def export_table_as_excel(request):
         'Pays',
         'Ville',
         'LinkedIn',
+        'Path',
         keywords["keyword1"],
         keywords["keyword2"],
         keywords["keyword3"],
@@ -223,8 +162,6 @@ def export_table_as_excel(request):
     ]
     sheet.append(headers)
     
-    # // salarié, pays, ville, linkedin, total, groupes
-
     # Add table data
     for file_name in file_names:
         file_split = file_name["file"].split(", ")
@@ -233,8 +170,8 @@ def export_table_as_excel(request):
             file_split[0],
             file_split[1],
             file_split[2],
-            # file_name["file"],
             f"https://linkedin.com/in/{name}",
+            file_name["path"].replace("file:///", "").replace("%20", " "),
             file_name["keyword1_total"],
             file_name["keyword2_total"],
             file_name["keyword3_total"],
@@ -243,15 +180,16 @@ def export_table_as_excel(request):
             file_name["groups"],
         ]
         sheet.append(row)
-    
-    copy_files_to_new_folder(file_names)
 
-    # Set the response headers for file download
-    response = FileResponse(sheet, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    # Save workbook to BytesIO
+    buffer = BytesIO()
+    workbook.save(buffer)
+    buffer.seek(0)
+
+    # Create a response with the BytesIO content
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=mytable.xlsx'
-
-    # Save the workbook to the response
-    # workbook.save(response)
+    response.write(buffer.read())
 
     return response
 
@@ -276,27 +214,30 @@ def copy_files_to_new_folder(files):
         
 def add_cv(request):
     if request.method == "POST":
-        files = request.FILES.getlist('files')
+        # files = request.FILES.getlist('files')
+        path = request.POST.get('path', '')
+        files = os.listdir(path)
         progress = 0
         total = len(files)
         for file in files:
-            if ((progress/total) * 100) % 10 == 0:
+            if (((progress/total) * 100) % 10 == 0):
                 print("Progress:", (progress/total) * 100, "%")
-            if not Resume.objects.filter(title=file.name).exists():
-                if file.name.lower().endswith(('.pdf', '.docx')):
-                    category = file.name.split(", ")[0]
+            if not Resume.objects.filter(title=file).exists():
+                if file.lower().endswith(('.pdf', '.docx')):
+                    category = file.split(", ")[0]
                     try:
                         # Save the file to a temporary location
-                        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                            for chunk in file.chunks():
+                        file_path = os.path.join(path, file)
+                        with open(file_path, 'rb') as source_file, tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                            for chunk in iter(lambda: source_file.read(4096), b''):
                                 temp_file.write(chunk)
                             temp_file_path = temp_file.name
                             # print(temp_file_path)
                             
-                        content = read_file(temp_file_path, file.name.lower())
+                        content = read_file(temp_file_path, file.lower())
                         
                         resume = Resume(
-                            title=file.name,
+                            title=file,
                             content=content,
                             category=category
                         )
