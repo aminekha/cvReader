@@ -44,7 +44,10 @@ def extract_data(content, file_name, keywords_list, coefficients):
     compiled_patterns = [re.compile(r'\b{}\b'.format(re.escape(keyword.lower()))) for keyword in keywords_list]
     for i, pattern in enumerate(compiled_patterns):
         matches = pattern.finditer(lowercase_content)
-        keyword_counts[keywords_list[i].lower()] = sum(1 for _ in matches) * int(coefficients[i])
+        try:
+            keyword_counts[keywords_list[i].lower()] = sum(1 for _ in matches) * int(coefficients[i])
+        except:
+            keyword_counts[keywords_list[i].lower()] = sum(1 for _ in matches)
 
 
     # Extract groups
@@ -76,6 +79,8 @@ def index(request):
         path = request.POST.get('path', '')
         keywords = request.POST.getlist('keywords[]')
         keywords = [keyword.lower() for keyword in keywords]
+        keywords = [x for x in keywords if x != ""]
+        
         coefficients = request.POST.getlist('coefficients[]')
         bonus = request.POST.getlist('bonus[]')
         limit = int(request.POST.get('limit', 500))
@@ -108,19 +113,35 @@ def index(request):
                 total_count += int(bonus[b])
 
                 if(total_count > 1):
-                    filtered_files.append(
-                        {
-                            "file": resume.title,
-                            "keyword1_total": file_keywords[keywords[0]],
-                            "keyword2_total": file_keywords[keywords[1]],
-                            "keyword3_total": file_keywords[keywords[2]],
-                            "bonus": bonus[b],
-                            "path": f"{path}/{resume.title}",
-                            "total": total_count,
-                            "person": resume.category,
-                            "groups": groups,
-                        }
-                    )
+                    filtered_file_data = {
+                        "file": resume.title,
+                        "bonus": bonus[b],
+                        "path": f"{path}/{resume.title}",
+                        "total": total_count,
+                        "person": resume.category,
+                        "groups": groups,
+                    }
+                    for i in range(len(keywords)):
+                        key = f"keyword{i + 1}_total"
+                        filtered_file_data[key] = file_keywords[keywords[i]]
+                    filtered_files.append(filtered_file_data)
+                    # filtered_files.append(
+                    #     {
+                    #         "file": resume.title,
+                    #         "keyword1_total": file_keywords[keywords[0]],
+                    #         "keyword2_total": file_keywords[keywords[1]],
+                    #         "keyword3_total": file_keywords[keywords[2]],
+                    #         "keyword4_total": file_keywords.get(keywords[3], ""),
+                    #         "keyword5_total": file_keywords.get(keywords[4], ""),
+                    #         "keyword6_total": file_keywords.get(keywords[5], ""),
+                    #         "keyword7_total": file_keywords.get(keywords[6], ""),
+                    #         "bonus": bonus[b],
+                    #         "path": f"{path}/{resume.title}",
+                    #         "total": total_count,
+                    #         "person": resume.category,
+                    #         "groups": groups,
+                    #     }
+                    # )
         
         # Time
         end_time = time.time()

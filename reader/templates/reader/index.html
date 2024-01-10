@@ -35,6 +35,22 @@
         <label for="coefficient3">Coefficient:</label>
         <input type="number" name="coefficients[]" id="coefficient3" value="1" min="1" required>
       </div>
+      <div>
+        <label for="keyword4">Mot clé 4:</label>
+        <input type="text" name="keywords[]" id="keyword4">
+      </div>
+      <div>
+        <label for="keyword5">Mot clé 5:</label>
+        <input type="text" name="keywords[]" id="keyword5" >
+      </div>
+      <div>
+        <label for="keyword6">Mot clé 6:</label>
+        <input type="text" name="keywords[]" id="keyword6" >
+      </div>
+      <div>
+        <label for="keyword7">Mot clé 7:</label>
+        <input type="text" name="keywords[]" id="keyword7" >
+      </div>
       <br>
       <div>
         <label for="keyword3">Bonus 1:</label>
@@ -110,6 +126,20 @@
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword1_total }}</td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword2_total }}</td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword3_total }}</td>
+
+          {% if file_name.keyword4_total is not None %}
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword4_total }}</td>
+          {% endif %}
+          {% if file_name.keyword5_total is not None %}
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword5_total }}</td>
+          {% endif %}
+          {% if file_name.keyword6_total is not None %}
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword6_total }}</td>
+          {% endif %}
+          {% if file_name.keyword7_total is not None %}
+          <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.keyword7_total }}</td>
+          {% endif %}
+
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.bonus }}</td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.total }}</td>
           <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ file_name.person }}</td>
