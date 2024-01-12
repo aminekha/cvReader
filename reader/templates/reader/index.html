@@ -35,21 +35,33 @@
         <label for="coefficient3">Coefficient:</label>
         <input type="number" name="coefficients[]" id="coefficient3" value="1" min="1" required>
       </div>
+      <br>
       <div>
         <label for="keyword4">Mot clé 4:</label>
         <input type="text" name="keywords[]" id="keyword4">
+        <label for="coefficient4">Coefficient:</label>
+        <input type="number" name="coefficients[]" id="coefficient4" value="1" min="1" required>
       </div>
+      <br>
       <div>
         <label for="keyword5">Mot clé 5:</label>
         <input type="text" name="keywords[]" id="keyword5" >
+        <label for="coefficient5">Coefficient:</label>
+        <input type="number" name="coefficients[]" id="coefficient5" value="1" min="1" required>
       </div>
+      <br>
       <div>
         <label for="keyword6">Mot clé 6:</label>
         <input type="text" name="keywords[]" id="keyword6" >
+        <label for="coefficient6">Coefficient:</label>
+        <input type="number" name="coefficients[]" id="coefficient6" value="1" min="1" required>
       </div>
+      <br>
       <div>
         <label for="keyword7">Mot clé 7:</label>
         <input type="text" name="keywords[]" id="keyword7" >
+        <label for="coefficient7">Coefficient:</label>
+        <input type="number" name="coefficients[]" id="coefficient7" value="1" min="1" required>
       </div>
       <br>
       <div>
@@ -158,12 +170,15 @@
       tableRows.forEach(function (row) {
         var linkElement = row.cells[0].querySelector('a');
         var link = linkElement.href;
-        console.log("link = ", row.cells);
         var data = {
           file: row.cells[0].textContent.trim(),
           keyword1_total: parseInt(row.cells[1].textContent.trim()),
           keyword2_total: parseInt(row.cells[2].textContent.trim()),
           keyword3_total: parseInt(row.cells[3].textContent.trim()),
+          keyword4_total: row.cells[4] ? parseInt(row.cells[4].textContent.trim()): "",
+          keyword5_total: row.cells[5] ? parseInt(row.cells[5].textContent.trim()): "",
+          keyword6_total: row.cells[6] ? parseInt(row.cells[6].textContent.trim()): "",
+          keyword7_total: row.cells[7] ? parseInt(row.cells[7].textContent.trim()): "",
           bonus: row.cells[4].textContent.trim(),
           total: parseInt(row.cells[5].textContent.trim()),
           path: link,
@@ -174,9 +189,13 @@
 
       tableHead.forEach(function (row) {
         var data = {
-          keyword1: row.cells[1].textContent.trim(),
-          keyword2: row.cells[2].textContent.trim(),
-          keyword3: row.cells[3].textContent.trim(),
+          keyword1: row.cells[1] ? row.cells[1].textContent.trim() : '',
+          keyword2: row.cells[2] ? row.cells[2].textContent.trim() : '',
+          keyword3: row.cells[3] ? row.cells[3].textContent.trim() : '',
+          keyword4: row.cells[4] ? row.cells[4].textContent.trim() : '',
+          keyword5: row.cells[5] ? row.cells[5].textContent.trim() : '',
+          keyword6: row.cells[6] ? row.cells[6].textContent.trim() : '',
+          keyword7: row.cells[7] ? row.cells[7].textContent.trim() : '',
         };
         customersData.push(data);
       })
