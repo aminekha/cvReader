@@ -189,7 +189,7 @@ def export_table_as_excel(request):
     
     # Add table data
     for file_name in file_names:
-        file_split = file_name["file"].split(", ")
+        file_split = file_name["file"].replace(",", ", ").split(", ")
         name = file_split[-1].replace(".pdf", "").replace(".docx", "")
         row = [
             file_split[0],
