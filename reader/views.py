@@ -189,26 +189,40 @@ def export_table_as_excel(request):
     
     # Add table data
     for file_name in file_names:
-        file_split = file_name["file"].replace(",", ", ").split(", ")
-        name = file_split[-1].replace(".pdf", "").replace(".docx", "").strip()
-        row = [
-            file_split[0],
-            file_split[1],
-            file_split[2],
-            f"https://linkedin.com/in/{name}",
-            file_name["path"].replace("file:///", "").replace("%20", " "),
-            file_name["keyword1_total"],
-            file_name["keyword2_total"],
-            file_name["keyword3_total"],
-            file_name.get("keyword4_total", ""),
-            file_name.get("keyword5_total", ""),
-            file_name.get("keyword6_total", ""),
-            file_name.get("keyword7_total", ""),
-            file_name["bonus"],
-            file_name["total"],
-            file_name["groups"],
-        ]
-        sheet.append(row)
+        try:
+            file_split = file_name["file"].replace(",", ", ").split(", ")
+            if len(file_split) > 2:
+                city = file_split[2]
+            else:
+                city = None
+
+            # Similarly, check for country
+            if len(file_split) > 1:
+                country = file_split[1]
+            else:
+                country = None
+            name = file_split[-1].replace(".pdf", "").replace(".docx", "").strip()
+            row = [
+                file_split[0],
+                country,
+                city,
+                f"https://linkedin.com/in/{name}",
+                file_name["path"].replace("file:///", "").replace("%20", " "),
+                file_name["keyword1_total"],
+                file_name["keyword2_total"],
+                file_name["keyword3_total"],
+                file_name.get("keyword4_total", ""),
+                file_name.get("keyword5_total", ""),
+                file_name.get("keyword6_total", ""),
+                file_name.get("keyword7_total", ""),
+                file_name["bonus"],
+                file_name["total"],
+                file_name["groups"],
+            ]
+            sheet.append(row)
+        except Exception as e:
+            print("Error in file: ", e)
+            continue
 
     # Save workbook to BytesIO
     buffer = BytesIO()
